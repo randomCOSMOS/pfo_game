@@ -139,6 +139,7 @@ playState.preload = function () {
     this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
+    this.game.load.spritesheet('decor', 'images/decor.png', 42, 42);
     this.game.load.json('level:0', 'data/level01.json');
     this.game.load.json('level:1', 'data/level02.json');
 }
@@ -153,15 +154,21 @@ playState.create = function () {
         door: this.game.add.audio('sfx:door')
     }
     this._loadlevel(this.game.cache.getJSON(`level:${this.level}`));
-    this._createHud();
+    this._createHud(this.game.cache.getJSON(`level:${this.level}`));
 }
 
-playState._createHud = function () {
+playState._createHud = function (data) {
     this.hud = this.game.add.group();
     this.hud.position.set(10, 10);
 
     this.keyIcon = this.game.make.image(0, 19, 'icon:key');
     this.keyIcon.anchor.set(0, 0.5);
+
+    for (let op of data.decoration){
+        this.decor = this.game.make.image(op.x-5,op.y,'decor', op.frame);
+        this.decor.anchor.set(0,0.2)
+        this.hud.add(this.decor)
+    }
 
     let coinIcon = this.game.make.image(this.keyIcon.width + 7, 0, 'icon:coin');
 
